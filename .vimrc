@@ -87,3 +87,4 @@ inoremap jk <esc>
 
 autocmd FileType * setlocal formatoptions-=c formatoptions-=r formatoptions-=o
 
+nnoremap gr :!git grep '\b<cword>\b' *<CR>
