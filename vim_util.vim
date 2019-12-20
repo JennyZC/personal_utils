@@ -38,18 +38,18 @@ function GetRelatedPath()
 	let searchDownPath = ""
 	let searchExtensions = []
 	if extension == "h"
-		let searchDownPath = GetSearchDownPath(s:headerTopDirectories)	
+		let searchDownPath = GetSearchDownPath(s:headerTopDirectories)
 		let searchExtensions = ["hpp", "cpp"]
 	elseif extension == "hpp"
-		let searchDownPath = GetSearchDownPath(s:headerTopDirectories)	
+		let searchDownPath = GetSearchDownPath(s:headerTopDirectories)
 		let searchExtensions = ["cpp", "h"]
 	elseif extension == "cpp"
-		let searchDownPath = GetSearchDownPath(s:sourceTopDirectories)	
+		let searchDownPath = GetSearchDownPath(s:sourceTopDirectories)
 		let searchExtensions = ["h", "hpp"]
 	else
 		echom "Not a C++ file"
 		return ""
-	endif	
+	endif
 
 	" Search downward from searchDownPath to find the file
 	for candidateExtension in searchExtensions
@@ -72,7 +72,7 @@ endfunction
 " else split for the new file
 function SplitOrJump(fullPath)
 	if &modified
-		exe "vert sf" a:fullPath 
+		exe "vert sf" a:fullPath
 	else
 		exe "find" a:fullPath
 	endif
@@ -95,3 +95,25 @@ function HeaderSplit()
 		exe "vert sf" path
 	endif
 endfunction
+
+" Shows space
+function ShowSpaces(...)
+  let @/='\v(\s+$)|( +\ze\t)'
+  let oldhlsearch=&hlsearch
+  if !a:0
+    let &hlsearch=!&hlsearch
+  else
+    let &hlsearch=a:1
+  end
+  return oldhlsearch
+endfunction
+
+" remove space
+function TrimSpaces() range
+  let oldhlsearch=ShowSpaces(1)
+  execute a:firstline.",".a:lastline."substitute ///gec"
+  let &hlsearch=oldhlsearch
+endfunction
+
+command -bar -nargs=? ShowSpaces call ShowSpaces(<args>)
+command -bar -nargs=0 -range=% TrimSpaces <line1>,<line2>call TrimSpaces()
